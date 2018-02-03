@@ -1,0 +1,244 @@
+<link rel = "import" href = "/Actindo/CoreModules/Start/Resources/app/bower_components/paper-input/paper-input.html">
+<link rel = "import" href = "/Actindo/CoreModules/Start/Resources/app/bower_components/paper-dialog/paper-dialog.html">
+<link rel = "import" href = "/Actindo/CoreModules/Start/Resources/app/bower_components/paper-button/paper-button.html">
+<link rel = "import" href = "/Actindo/CoreModules/Start/Resources/app/bower_components/iron-icon/iron-icon.html">
+
+<link rel = "import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/polymer/lib/utils/debounce.html">
+
+<link rel = "import" href = "../paper-date-picker/paper-date-picker.html">
+<link rel = "import" href = "../paper-date-picker/paper-year-list.html">
+
+
+<dom-module id = "actindo-date-picker">
+
+    <template>
+
+        <style>
+
+            .container
+            {
+                position         : relative;
+                background-color : white;
+            }
+
+            #dialog
+            {
+                z-index          : 1;
+                position         : absolute;
+                background-color : white;
+            }
+
+            paper-date-picker
+            {
+                --light-primary-color   : white;
+                --text-primary-color    : var(--actindo-secondary);
+                --default-primary-color : var(--actindo-primary);
+            }
+
+        </style>
+
+        <div class = "container">
+            <paper-input label = "[[label]]" value = "{{_value}}" type = "[[_dateInputType]]">
+                <paper-icon-button icon = "date-range" slot = "prefix" on-click = "openCloseCalender"></paper-icon-button>
+                <div slot = "prefix"></div>
+            </paper-input>
+
+            <template is = "dom-if" if = "[[_pickerVisible]]">
+                <paper-card id = "dialog" class = "paper-date-picker-dialog" on-iron-overlay-closed = "dismissDialog" elevation = "5">
+                    <paper-date-picker id = "datePicker" date = "{{_date}}"></paper-date-picker>
+                </paper-card>
+            </template>
+
+        </div>
+
+    </template>
+
+    <script>
+
+        class ActindoDatePicker extends Polymer.Element
+        {
+
+            static get is()
+            {
+                return "actindo-date-picker";
+            }
+
+            static get properties()
+            {
+                return {
+                    _inputType:
+                    {
+                        type  : String,
+                        value : ""
+                    },
+
+                    _date:
+                    {
+                        type : String,
+                        // observer: "onDateChanged"
+                    },
+
+                    _year:
+                        {
+                            type : String,
+                            // observer: "onYearChanged"
+                        },
+
+                    _value:
+                    {
+                        type: String,
+                        // observer: "onValueChanged"
+                    },
+
+                    _pickerVisible:
+                    {
+                        type  : Boolean,
+                        value : false
+                    },
+
+                    label:
+                    {
+                        type: String
+                    },
+                };
+            }
+
+            // Convert input value to format for date picker
+            onValueChanged(newValue, oldValue)
+            {
+                let me = this;
+                // If value different then set
+                me._debouncer = Polymer.Debouncer.debounce( me._debouncer,
+                                                            Polymer.Async.timeOut.after(200),
+                                                            () => { me.convertTodate(newValue);
+                });
+            }
+
+            convertToDate(value)
+            {
+
+            }
+
+            onDateChanged( newValue, oldValue )
+            {
+                // Convert to paper-ivalue
+                // If value different then set
+            }
+
+            prepareUi()
+            {
+                let os = this.getOS();
+                if( os === "iOS" || os === "Android" )
+                {
+                    this.set("_dateInputType", "date");
+                }
+                else
+                {
+                    this.set("_dateInputType", "");
+                }
+            }
+
+            getOS()
+            {
+                let userAgent        = window.navigator.userAgent;
+                let platform         = window.navigator.platform;
+                let macosPlatforms   = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
+                let windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+                let iosPlatforms     = ['iPhone', 'iPad', 'iPod'];
+                let os               = null;
+
+                if (macosPlatforms.indexOf(platform) !== -1)
+                {
+                    os = 'Mac OS';
+                }
+                else if (iosPlatforms.indexOf(platform) !== -1)
+                {
+                    os = 'iOS';
+                }
+                else if (windowsPlatforms.indexOf(platform) !== -1)
+                {
+                    os = 'Windows';
+                }
+                else if (/Android/.test(userAgent))
+                {
+                    os = 'Android';
+                }
+                else if (!os && /Linux/.test(platform))
+                {
+                    os = 'Linux';
+                }
+
+                return os;
+            }
+
+            connectedCallback()
+            {
+                super.connectedCallback();
+                let me = this;
+
+                this._downHandler = this.onDown.bind(this);
+                this._upHandler   = this.onUp.bind(this);
+
+                this.prepareUi();
+            }
+
+            onUp(event )
+            {
+                console.log("UP");
+                let found = false;
+                for( let i = 0; i < event.path.length; i++)
+                {
+                    let row = event.path[i];
+                    if( row.nodeName === "ACTINDO-DATE-PICKER"  )
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if( this._changeOpenState && !found )
+                {
+                    this.openCloseCalender();
+                }
+            }
+
+            onDown(event)
+            {
+                console.log("DOWN");
+                let found = false;
+                for( let i = 0; i < event.path.length; i++ )
+                {
+                    let row = event.path[i];
+                    if( row.nodeName === "ACTINDO-DATE-PICKER"  )
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                this._changeOpenState = !found;
+            }
+
+
+
+
+            openCloseCalender()
+            {
+                this.set("_pickerVisible", !this._pickerVisible);
+                let me = this;
+                if( this._pickerVisible )
+                {
+                    document.addEventListener( "mousedown" , this._downHandler );
+                    document.addEventListener( "mouseup"   , this._upHandler   );
+                }
+                else
+                {
+                    document.removeEventListener( "mousedown" , this._downHandler );
+                    document.removeEventListener( "mouseup"   , this._upHandler   );
+                }
+            }
+        }
+
+        customElements.define( ActindoDatePicker.is, ActindoDatePicker );
+
+    </script>
+
+</dom-module>
