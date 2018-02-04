@@ -1,8 +1,9 @@
 # actindo-date-picker
 A material design based date picker. Using the paper-date-picker
 for day and year selection. The latter is based on an iron-list.
-Some adjustments were required in paper-date-picker.
+Some adjustments were required in paper-date-picker - see/use this fork of the [paper-date-picker](https://github.com/ActindoElements/paper-date-picker).
 The selected date is set in the paper-input line.
+
 
 ## Example
 ```javascript
