@@ -66,36 +66,61 @@
             static get properties()
             {
                 return {
+
+                    /**
+                     * Use moment.js date format convention
+                     */
+                    format:
+                    {
+                        type  : String,
+                        value : "l",
+                    },
+
+                    /**
+                     * Moment.js local definition
+                     */
+                    local:
+                    {
+                        type  : String,
+                        value : "de",
+                    },
+
                     _inputType:
                     {
                         type  : String,
                         value : ""
                     },
 
+                    /**
+                     * Resulting date
+                     */
                     _date:
                     {
-                        type : String,
-                        // observer: "onDateChanged"
+                        type     : String,
+                        observer : "_onDateChanged"
                     },
 
-                    _year:
-                        {
-                            type : String,
-                            // observer: "onYearChanged"
-                        },
-
+                    /**
+                     * Value for paper input
+                     */
                     _value:
                     {
-                        type: String,
-                        // observer: "onValueChanged"
+                        type     : String,
+                        observer : "_onValueChanged"
                     },
 
+                    /**
+                     * Is date picker visible
+                     */
                     _pickerVisible:
                     {
                         type  : Boolean,
                         value : false
                     },
 
+                    /**
+                     * Label for the paper intput
+                     */
                     label:
                     {
                         type: String
@@ -103,26 +128,40 @@
                 };
             }
 
-            // Convert input value to format for date picker
-            onValueChanged(newValue, oldValue)
+            _onValueChanged(newValue, oldValue)
             {
                 let me = this;
                 // If value different then set
                 me._debouncer = Polymer.Debouncer.debounce( me._debouncer,
                                                             Polymer.Async.timeOut.after(200),
-                                                            () => { me.convertTodate(newValue);
+                                                            () => { me._convertToDate( newValue );
                 });
             }
 
-            convertToDate(value)
+            _convertToOutputFormat(value)
             {
+                let me    = this;
+                let date  = new Date( value );
 
+                return moment( date ).locale( me.local ).format( this.format );
             }
 
-            onDateChanged( newValue, oldValue )
+            _convertToDate(value)
             {
-                // Convert to paper-ivalue
-                // If value different then set
+                let me   = this;
+                let date = moment( value, me.format, me.local, true );
+
+                if( date.isValid() )
+                {
+                    me.set( "_date", new Date( date.format()) )
+                }
+            }
+
+            _onDateChanged( newValue, oldValue )
+            {
+                let me        = this;
+                let formatted = this._convertToOutputFormat( newValue );
+                me.set( "_value", formatted );
             }
 
             prepareUi()
@@ -130,11 +169,11 @@
                 let os = this.getOS();
                 if( os === "iOS" || os === "Android" )
                 {
-                    this.set("_dateInputType", "date");
+                    this.set( "_dateInputType", "date" );
                 }
                 else
                 {
-                    this.set("_dateInputType", "");
+                    this.set( "_dateInputType", "" );
                 }
             }
 
@@ -142,28 +181,28 @@
             {
                 let userAgent        = window.navigator.userAgent;
                 let platform         = window.navigator.platform;
-                let macosPlatforms   = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
-                let windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
-                let iosPlatforms     = ['iPhone', 'iPad', 'iPod'];
+                let macosPlatforms   = [ 'Macintosh', 'MacIntel', 'MacPPC', 'Mac68K' ];
+                let windowsPlatforms = [ 'Win32', 'Win64', 'Windows', 'WinCE' ];
+                let iosPlatforms     = [ 'iPhone', 'iPad', 'iPod' ];
                 let os               = null;
 
-                if (macosPlatforms.indexOf(platform) !== -1)
+                if ( macosPlatforms.indexOf(platform) !== -1 )
                 {
                     os = 'Mac OS';
                 }
-                else if (iosPlatforms.indexOf(platform) !== -1)
+                else if ( iosPlatforms.indexOf(platform) !== -1 )
                 {
                     os = 'iOS';
                 }
-                else if (windowsPlatforms.indexOf(platform) !== -1)
+                else if ( windowsPlatforms.indexOf(platform) !== -1 )
                 {
                     os = 'Windows';
                 }
-                else if (/Android/.test(userAgent))
+                else if ( /Android/.test( userAgent ) )
                 {
                     os = 'Android';
                 }
-                else if (!os && /Linux/.test(platform))
+                else if ( !os && /Linux/.test(platform) )
                 {
                     os = 'Linux';
                 }
@@ -176,17 +215,17 @@
                 super.connectedCallback();
                 let me = this;
 
-                this._downHandler = this.onDown.bind(this);
-                this._upHandler   = this.onUp.bind(this);
+                this._downHandler = this.onDown.bind( this );
+                this._upHandler   = this.onUp.bind( this );
 
                 this.prepareUi();
             }
 
-            onUp(event )
+            onUp( event )
             {
-                console.log("UP");
                 let found = false;
-                for( let i = 0; i < event.path.length; i++)
+
+                for( let i = 0; i < event.path.length; i++ )
                 {
                     let row = event.path[i];
                     if( row.nodeName === "ACTINDO-DATE-PICKER"  )
@@ -203,7 +242,6 @@
 
             onDown(event)
             {
-                console.log("DOWN");
                 let found = false;
                 for( let i = 0; i < event.path.length; i++ )
                 {
@@ -216,9 +254,6 @@
                 }
                 this._changeOpenState = !found;
             }
-
-
-
 
             openCloseCalender()
             {
