@@ -9,6 +9,8 @@ The selected date is set in the paper-input line.
 <actindo-date-picker label = "Select date" format = "l" local = "de"></actindo-date-picker>
 ```
 
+![Example day](https://raw.githubusercontent.com/ActindoElements/actindo-date-picker/master/example/example_day.png)
+![Example day](https://raw.githubusercontent.com/ActindoElements/actindo-date-picker/master/example/example_year.png)
 ## Properties
 
 **format**:
