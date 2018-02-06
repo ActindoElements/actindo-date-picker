@@ -1,0 +1,23 @@
+{
+    "name"        : "actindo-date-picker",
+    "version"     : "0.1.0",
+    "description" : "A material design based date picker",
+    "license"     : "Apache-2.0",
+    "main"        : "actindo-date-picker.html",
+    "keywords"    : [
+        "polymer",
+        "web-components"
+    ],
+    "ignore" : [
+        "**/.*",
+        "bower_components"
+    ],
+    "dependencies"           : {
+        "polymer"            : "Polymer/polymer#^2.0.0",
+        "paper-date-picker"  : "^1.2.2",
+        "paper-input"        : "^2.0.1",
+        "paper-dialog"       : "^2.0.0",
+        "paper-button"       : "^2.0.0",
+        "iron-icon"          : "^2.0.0",
+    }
+}
