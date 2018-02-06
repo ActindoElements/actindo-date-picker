@@ -1,0 +1,439 @@
+{
+  "schema_version": "1.0.0",
+  "elements": [
+    {
+      "description": "`<actindo-date-picker>` implements a material design based date picker.\n\n### Features\n\n- format can be set based on style and location\n- date is automatically validated during input\n- date and year can be selected",
+      "summary": "",
+      "path": "actindo-date-picker.html",
+      "properties": [
+        {
+          "name": "format",
+          "type": "string",
+          "description": "Use moment.js date format convention",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 78,
+              "column": 20
+            },
+            "end": {
+              "line": 82,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"l\""
+        },
+        {
+          "name": "local",
+          "type": "string",
+          "description": "Moment.js local definition",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 87,
+              "column": 20
+            },
+            "end": {
+              "line": 91,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"de\""
+        },
+        {
+          "name": "_inputType",
+          "type": "string",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 93,
+              "column": 20
+            },
+            "end": {
+              "line": 97,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"\""
+        },
+        {
+          "name": "_date",
+          "type": "string",
+          "description": "Resulting date",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 102,
+              "column": 20
+            },
+            "end": {
+              "line": 106,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_onDateChanged\""
+            }
+          }
+        },
+        {
+          "name": "_value",
+          "type": "string",
+          "description": "Value for paper input",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 111,
+              "column": 20
+            },
+            "end": {
+              "line": 115,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_onValueChanged\""
+            }
+          }
+        },
+        {
+          "name": "_pickerVisible",
+          "type": "boolean",
+          "description": "Is date picker visible",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 120,
+              "column": 20
+            },
+            "end": {
+              "line": 124,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "Label for the paper intput",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 129,
+              "column": 20
+            },
+            "end": {
+              "line": 132,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "_onValueChanged",
+          "description": "Set value for calendar after waiting time and if valid",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 144,
+              "column": 12
+            },
+            "end": {
+              "line": 152,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue",
+              "type": "String"
+            },
+            {
+              "name": "oldValue",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "_convertToOutputFormat",
+          "description": "Convert selected date value to format used in input field",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 161,
+              "column": 12
+            },
+            "end": {
+              "line": 167,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "value",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "_convertToDate",
+          "description": "Convert input date to date in calendar if valid",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 176,
+              "column": 12
+            },
+            "end": {
+              "line": 185,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "value",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "_onDateChanged",
+          "description": "Convert selected date in calendar to output date",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 195,
+              "column": 12
+            },
+            "end": {
+              "line": 200,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue",
+              "type": "String"
+            },
+            {
+              "name": "oldValue",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "prepareUi",
+          "description": "Handle UI - set correct input type for mobile devices",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 205,
+              "column": 12
+            },
+            "end": {
+              "line": 216,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_getOS",
+          "description": "Get the operating system from userAgent/platform to set the correct UI properties",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 225,
+              "column": 12
+            },
+            "end": {
+              "line": 256,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "String"
+          }
+        },
+        {
+          "name": "connectedCallback",
+          "description": "Binds the click events during initial callback",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 261,
+              "column": 12
+            },
+            "end": {
+              "line": 270,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_onUp",
+          "description": "Mouse \"Up\" event - Handle correct behavior to close calendar",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 279,
+              "column": 12
+            },
+            "end": {
+              "line": 296,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "event",
+              "type": "Object"
+            }
+          ]
+        },
+        {
+          "name": "_onDown",
+          "description": "Mouse \"Down\" event - Handle correct behavior to close calendar",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 305,
+              "column": 12
+            },
+            "end": {
+              "line": 318,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "event",
+              "type": "Object"
+            }
+          ]
+        },
+        {
+          "name": "_openCloseCalender",
+          "description": "Adds or removes event listeners for mouse events - open / closes calender",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 325,
+              "column": 12
+            },
+            "end": {
+              "line": 339,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 64,
+          "column": 8
+        },
+        "end": {
+          "line": 340,
+          "column": 9
+        }
+      },
+      "privacy": "public",
+      "superclass": "Polymer.Element",
+      "name": "ActindoDatePicker",
+      "attributes": [
+        {
+          "name": "format",
+          "description": "Use moment.js date format convention",
+          "sourceRange": {
+            "start": {
+              "line": 78,
+              "column": 20
+            },
+            "end": {
+              "line": 82,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "local",
+          "description": "Moment.js local definition",
+          "sourceRange": {
+            "start": {
+              "line": 87,
+              "column": 20
+            },
+            "end": {
+              "line": 91,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "label",
+          "description": "Label for the paper intput",
+          "sourceRange": {
+            "start": {
+              "line": 129,
+              "column": 20
+            },
+            "end": {
+              "line": 132,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        }
+      ],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "actindo-date-picker"
+    }
+  ]
+}
