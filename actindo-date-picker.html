@@ -1,13 +1,21 @@
-<link rel = "import" href = "/Actindo/CoreModules/Start/Resources/app/bower_components/paper-input/paper-input.html">
-<link rel = "import" href = "/Actindo/CoreModules/Start/Resources/app/bower_components/paper-dialog/paper-dialog.html">
-<link rel = "import" href = "/Actindo/CoreModules/Start/Resources/app/bower_components/paper-button/paper-button.html">
-<link rel = "import" href = "/Actindo/CoreModules/Start/Resources/app/bower_components/iron-icon/iron-icon.html">
-
-<link rel = "import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/polymer/lib/utils/debounce.html">
-
+<link rel = "import" href = "../paper-input/paper-input.html">
+<link rel = "import" href = "../paper-dialog/paper-dialog.html">
+<link rel = "import" href = "../paper-button/paper-button.html">
 <link rel = "import" href = "../paper-date-picker/paper-date-picker.html">
-<link rel = "import" href = "../paper-date-picker/paper-year-list.html">
+<link rel = "import" href = "../iron-icon/iron-icon.html">
+<link rel = "import" href = "../polymer/lib/utils/debounce.html">
 
+
+<!--
+`<actindo-date-picker>` implements a material design based date picker.
+
+### Features
+
+- format can be set based on style and location
+- date is automatically validated during input
+- date and year can be selected
+
+-->
 
 <dom-module id = "actindo-date-picker">
 
@@ -39,7 +47,7 @@
 
         <div class = "container">
             <paper-input label = "[[label]]" value = "{{_value}}" type = "[[_dateInputType]]">
-                <paper-icon-button icon = "date-range" slot = "prefix" on-click = "openCloseCalender"></paper-icon-button>
+                <paper-icon-button icon = "date-range" slot = "prefix" on-click = "_openCloseCalender"></paper-icon-button>
                 <div slot = "prefix"></div>
             </paper-input>
 
@@ -66,7 +74,6 @@
             static get properties()
             {
                 return {
-
                     /**
                      * Use moment.js date format convention
                      */
@@ -128,6 +135,14 @@
                 };
             }
 
+            /**
+             * Set value for calendar after waiting time and if valid
+             *
+             * @param {String} newValue
+             * @param {String} oldValue
+             *
+             * @private
+             */
             _onValueChanged(newValue, oldValue)
             {
                 let me = this;
@@ -138,6 +153,13 @@
                 });
             }
 
+            /**
+             * Convert selected date value to format used in input field
+             *
+             * @param {String} value
+             *
+             * @private
+             */
             _convertToOutputFormat(value)
             {
                 let me    = this;
@@ -146,6 +168,13 @@
                 return moment( date ).locale( me.local ).format( this.format );
             }
 
+            /**
+             * Convert input date to date in calendar if valid
+             *
+             * @param {String} value
+             *
+             * @private
+             */
             _convertToDate(value)
             {
                 let me   = this;
@@ -157,6 +186,14 @@
                 }
             }
 
+            /**
+             * Convert selected date in calendar to output date
+             *
+             * @param {String} newValue
+             * @param {String} oldValue
+             *
+             * @private
+             */
             _onDateChanged( newValue, oldValue )
             {
                 let me        = this;
@@ -164,9 +201,12 @@
                 me.set( "_value", formatted );
             }
 
+            /**
+             * Handle UI - set correct input type for mobile devices
+             */
             prepareUi()
             {
-                let os = this.getOS();
+                let os = this._getOS();
                 if( os === "iOS" || os === "Android" )
                 {
                     this.set( "_dateInputType", "date" );
@@ -177,7 +217,14 @@
                 }
             }
 
-            getOS()
+            /**
+             * Get the operating system from userAgent/platform to set the correct UI properties
+             *
+             * @returns {String}
+             *
+             * @private
+             */
+            _getOS()
             {
                 let userAgent        = window.navigator.userAgent;
                 let platform         = window.navigator.platform;
@@ -210,18 +257,28 @@
                 return os;
             }
 
+            /**
+             * Binds the click events during initial callback
+             */
             connectedCallback()
             {
                 super.connectedCallback();
                 let me = this;
 
-                this._downHandler = this.onDown.bind( this );
-                this._upHandler   = this.onUp.bind( this );
+                this._downHandler = this._onDown.bind( this );
+                this._upHandler   = this._onUp.bind( this );
 
                 this.prepareUi();
             }
 
-            onUp( event )
+            /**
+             * Mouse "Up" event - Handle correct behavior to close calendar
+             *
+             * @param event
+             *
+             * @private
+             */
+            _onUp( event )
             {
                 let found = false;
 
@@ -236,11 +293,18 @@
                 }
                 if( this._changeOpenState && !found )
                 {
-                    this.openCloseCalender();
+                    this._openCloseCalender();
                 }
             }
 
-            onDown(event)
+            /**
+             * Mouse "Down" event - Handle correct behavior to close calendar
+             *
+             * @param event
+             *
+             * @private
+             */
+            _onDown(event)
             {
                 let found = false;
                 for( let i = 0; i < event.path.length; i++ )
@@ -255,7 +319,12 @@
                 this._changeOpenState = !found;
             }
 
-            openCloseCalender()
+            /**
+             * Adds or removes event listeners for mouse events - open / closes calender
+             *
+             * @private
+             */
+            _openCloseCalender()
             {
                 this.set("_pickerVisible", !this._pickerVisible);
                 let me = this;
