@@ -45,7 +45,7 @@
         </style>
 
         <div class = "container">
-            <paper-input label = "[[label]]" value = "{{_value}}" type = "[[_dateInputType]]">
+            <paper-input label = "[[label]]" value = "{{value}}" type = "[[_dateInputType]]">
                 <paper-icon-button icon = "date-range" slot = "prefix" on-click = "_openCloseCalender"></paper-icon-button>
                 <div slot = "prefix"></div>
             </paper-input>
@@ -109,7 +109,7 @@
                     /**
                      * Value for paper input
                      */
-                    _value:
+                    value:
                     {
                         type     : String,
                         observer : "_onValueChanged"
@@ -197,7 +197,7 @@
             {
                 let me        = this;
                 let formatted = this._convertToOutputFormat( newValue );
-                me.set( "_value", formatted );
+                me.set( "value", formatted );
             }
 
             /**
