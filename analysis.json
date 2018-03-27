@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "elements": [
     {
-      "description": "`<actindo-date-picker>` implements a material design based date picker.\n\n### Features\n\n- format can be set based on style and location\n- date is automatically validated during input\n- date and year can be selected",
+      "description": "`<actindo-date-picker>` implements a material design based date picker.\n\n### Features\n\n- format can be set based on style and location\n- date is automatically validated during input\n- date and year can be selected\n- minimum and maximum date can be set",
       "summary": "",
       "path": "actindo-date-picker.html",
       "properties": [
@@ -13,11 +13,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 78,
+              "line": 80,
               "column": 20
             },
             "end": {
-              "line": 82,
+              "line": 84,
               "column": 21
             }
           },
@@ -27,17 +27,17 @@
           "defaultValue": "\"l\""
         },
         {
-          "name": "local",
+          "name": "locale",
           "type": "string",
-          "description": "Moment.js local definition",
+          "description": "Moment.js locale definition",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 87,
+              "line": 89,
               "column": 20
             },
             "end": {
-              "line": 91,
+              "line": 93,
               "column": 21
             }
           },
@@ -47,37 +47,17 @@
           "defaultValue": "\"de\""
         },
         {
-          "name": "_inputType",
-          "type": "string",
-          "description": "",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 93,
-              "column": 20
-            },
-            "end": {
-              "line": 97,
-              "column": 21
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "\"\""
-        },
-        {
           "name": "_date",
           "type": "string",
           "description": "Resulting date",
-          "privacy": "protected",
+          "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 102,
+              "line": 100,
               "column": 20
             },
             "end": {
-              "line": 106,
+              "line": 104,
               "column": 21
             }
           },
@@ -88,22 +68,23 @@
           }
         },
         {
-          "name": "_value",
+          "name": "value",
           "type": "string",
           "description": "Value for paper input",
-          "privacy": "protected",
+          "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 111,
+              "line": 109,
               "column": 20
             },
             "end": {
-              "line": 115,
+              "line": 114,
               "column": 21
             }
           },
           "metadata": {
             "polymer": {
+              "notify": true,
               "observer": "\"_onValueChanged\""
             }
           }
@@ -112,14 +93,14 @@
           "name": "_pickerVisible",
           "type": "boolean",
           "description": "Is date picker visible",
-          "privacy": "protected",
+          "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 120,
+              "line": 121,
               "column": 20
             },
             "end": {
-              "line": 124,
+              "line": 125,
               "column": 21
             }
           },
@@ -129,37 +110,286 @@
           "defaultValue": "false"
         },
         {
-          "name": "label",
+          "name": "name",
           "type": "string",
-          "description": "Label for the paper intput",
+          "description": "Name for the date field",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 129,
+              "line": 130,
               "column": 20
             },
             "end": {
-              "line": 132,
+              "line": 133,
               "column": 21
             }
           },
           "metadata": {
             "polymer": {}
           }
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "Label for the paper input",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 138,
+              "column": 20
+            },
+            "end": {
+              "line": 141,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "minDate",
+          "type": "string",
+          "description": "Minimum date",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 146,
+              "column": 20
+            },
+            "end": {
+              "line": 150,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_onMinDateChanged\""
+            }
+          }
+        },
+        {
+          "name": "maxDate",
+          "type": "string",
+          "description": "Maximum date",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 155,
+              "column": 20
+            },
+            "end": {
+              "line": 159,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_onMaxDateChanged\""
+            }
+          }
+        },
+        {
+          "name": "_minDate",
+          "type": "Date",
+          "description": "Minimum date as date object",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 166,
+              "column": 20
+            },
+            "end": {
+              "line": 169,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "_maxDate",
+          "type": "Date",
+          "description": "Minimum date as date object",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 176,
+              "column": 20
+            },
+            "end": {
+              "line": 179,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "description": "Validation result",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 184,
+              "column": 20
+            },
+            "end": {
+              "line": 189,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "_errorMessage",
+          "type": "string",
+          "description": "Error message in case of invalid input",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 196,
+              "column": 20
+            },
+            "end": {
+              "line": 199,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "description": "Required property - passed on to underlying paper input",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 204,
+              "column": 20
+            },
+            "end": {
+              "line": 208,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "description": "Disabled property - passed on to underlying paper input",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 213,
+              "column": 20
+            },
+            "end": {
+              "line": 217,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
         }
       ],
       "methods": [
+        {
+          "name": "validate",
+          "description": "Validate for form support",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 225,
+              "column": 12
+            },
+            "end": {
+              "line": 250,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_onMinDateChanged",
+          "description": "Converts given min date to date object used by date picker",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 260,
+              "column": 12
+            },
+            "end": {
+              "line": 268,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue",
+              "type": "String"
+            },
+            {
+              "name": "oldValue",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "_onMaxDateChanged",
+          "description": "Converts given max date to date object used by date picker",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 278,
+              "column": 12
+            },
+            "end": {
+              "line": 286,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue",
+              "type": "String"
+            },
+            {
+              "name": "oldValue",
+              "type": "String"
+            }
+          ]
+        },
         {
           "name": "_onValueChanged",
           "description": "Set value for calendar after waiting time and if valid",
           "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 144,
+              "line": 296,
               "column": 12
             },
             "end": {
-              "line": 152,
+              "line": 307,
               "column": 13
             }
           },
@@ -181,11 +411,11 @@
           "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 161,
+              "line": 316,
               "column": 12
             },
             "end": {
-              "line": 167,
+              "line": 322,
               "column": 13
             }
           },
@@ -203,11 +433,11 @@
           "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 176,
+              "line": 331,
               "column": 12
             },
             "end": {
-              "line": 185,
+              "line": 342,
               "column": 13
             }
           },
@@ -225,11 +455,11 @@
           "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 195,
+              "line": 352,
               "column": 12
             },
             "end": {
-              "line": 200,
+              "line": 357,
               "column": 13
             }
           },
@@ -251,11 +481,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 205,
+              "line": 362,
               "column": 12
             },
             "end": {
-              "line": 216,
+              "line": 373,
               "column": 13
             }
           },
@@ -268,11 +498,11 @@
           "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 225,
+              "line": 382,
               "column": 12
             },
             "end": {
-              "line": 256,
+              "line": 413,
               "column": 13
             }
           },
@@ -288,11 +518,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 261,
+              "line": 418,
               "column": 12
             },
             "end": {
-              "line": 270,
+              "line": 427,
               "column": 13
             }
           },
@@ -305,11 +535,11 @@
           "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 279,
+              "line": 436,
               "column": 12
             },
             "end": {
-              "line": 296,
+              "line": 453,
               "column": 13
             }
           },
@@ -327,11 +557,11 @@
           "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 305,
+              "line": 462,
               "column": 12
             },
             "end": {
-              "line": 318,
+              "line": 475,
               "column": 13
             }
           },
@@ -349,11 +579,11 @@
           "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 325,
+              "line": 482,
               "column": 12
             },
             "end": {
-              "line": 339,
+              "line": 496,
               "column": 13
             }
           },
@@ -366,11 +596,11 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 64,
+          "line": 65,
           "column": 8
         },
         "end": {
-          "line": 340,
+          "line": 497,
           "column": 9
         }
       },
@@ -383,11 +613,11 @@
           "description": "Use moment.js date format convention",
           "sourceRange": {
             "start": {
-              "line": 78,
+              "line": 80,
               "column": 20
             },
             "end": {
-              "line": 82,
+              "line": 84,
               "column": 21
             }
           },
@@ -395,15 +625,47 @@
           "type": "string"
         },
         {
-          "name": "local",
-          "description": "Moment.js local definition",
+          "name": "locale",
+          "description": "Moment.js locale definition",
           "sourceRange": {
             "start": {
-              "line": 87,
+              "line": 89,
               "column": 20
             },
             "end": {
-              "line": 91,
+              "line": 93,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "description": "Value for paper input",
+          "sourceRange": {
+            "start": {
+              "line": 109,
+              "column": 20
+            },
+            "end": {
+              "line": 114,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "description": "Name for the date field",
+          "sourceRange": {
+            "start": {
+              "line": 130,
+              "column": 20
+            },
+            "end": {
+              "line": 133,
               "column": 21
             }
           },
@@ -412,22 +674,115 @@
         },
         {
           "name": "label",
-          "description": "Label for the paper intput",
+          "description": "Label for the paper input",
           "sourceRange": {
             "start": {
-              "line": 129,
+              "line": 138,
               "column": 20
             },
             "end": {
-              "line": 132,
+              "line": 141,
               "column": 21
             }
           },
           "metadata": {},
           "type": "string"
+        },
+        {
+          "name": "min-date",
+          "description": "Minimum date",
+          "sourceRange": {
+            "start": {
+              "line": 146,
+              "column": 20
+            },
+            "end": {
+              "line": 150,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "max-date",
+          "description": "Maximum date",
+          "sourceRange": {
+            "start": {
+              "line": 155,
+              "column": 20
+            },
+            "end": {
+              "line": 159,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "invalid",
+          "description": "Validation result",
+          "sourceRange": {
+            "start": {
+              "line": 184,
+              "column": 20
+            },
+            "end": {
+              "line": 189,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "required",
+          "description": "Required property - passed on to underlying paper input",
+          "sourceRange": {
+            "start": {
+              "line": 204,
+              "column": 20
+            },
+            "end": {
+              "line": 208,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "description": "Disabled property - passed on to underlying paper input",
+          "sourceRange": {
+            "start": {
+              "line": 213,
+              "column": 20
+            },
+            "end": {
+              "line": 217,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
         }
       ],
-      "events": [],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "value-changed",
+          "description": "Fired when the `value` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "invalid-changed",
+          "description": "Fired when the `invalid` property changes.",
+          "metadata": {}
+        }
+      ],
       "styling": {
         "cssVariables": [],
         "selectors": []
