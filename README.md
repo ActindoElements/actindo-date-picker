@@ -11,7 +11,7 @@ and maximum date can be set.
 
 ## Example
 ```javascript
-<actindo-date-picker label = "Select date" format = "l" locale = "de" min-date = "01.01.2018" max-date = "31.12.2018"></actindo-date-picker>
+<actindo-date-picker label = "Select date" format = "l" locale = "de" min-date = "01.01.2018" max-date = "31.12.2018" disabled = "[[disabled]]" required = "[[required]]" invalid = "{{invalid}}" ></actindo-date-picker>
 ```
 
 ![Example day](https://raw.githubusercontent.com/ActindoElements/actindo-date-picker/master/example/example_day.png)
@@ -33,3 +33,11 @@ Set the maximum date allowed for the date picker. Should be in the same format a
 **label**:
 Set the label visible in the paper-input line
 
+**required**:
+Required status of the field regarding a possible form submit
+
+**disabled**:
+Disabled status of the field.
+
+**invalid**:
+Invalid status of the set date
