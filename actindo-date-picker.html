@@ -52,7 +52,7 @@
 
             <template is = "dom-if" if = "[[_pickerVisible]]">
                 <paper-card id = "dialog" class = "paper-date-picker-dialog" on-iron-overlay-closed = "dismissDialog" elevation = "5">
-                    <paper-date-picker id = "datePicker" date = "{{_date}}"></paper-date-picker>
+                    <paper-date-picker id = "datePicker" date = "{{_date}}" min-date = "[[_minDate]]" max-date = "[[_maxDate]]"></paper-date-picker>
                 </paper-card>
             </template>
 
@@ -83,9 +83,9 @@
                     },
 
                     /**
-                     * Moment.js local definition
+                     * Moment.js locale definition
                      */
-                    local:
+                    locale:
                     {
                         type  : String,
                         value : "de",
@@ -99,6 +99,8 @@
 
                     /**
                      * Resulting date
+                     *
+                     * @private
                      */
                     _date:
                     {
@@ -112,11 +114,14 @@
                     value:
                     {
                         type     : String,
+                        notify   : true,
                         observer : "_onValueChanged"
                     },
 
                     /**
                      * Is date picker visible
+                     *
+                     * @private
                      */
                     _pickerVisible:
                     {
@@ -125,13 +130,91 @@
                     },
 
                     /**
-                     * Label for the paper intput
+                     * Name for the date field
+                     */
+                    name:
+                    {
+                        type : String,
+                    },
+
+                    /**
+                     * Label for the paper input
                      */
                     label:
                     {
-                        type: String
+                        type : String
                     },
+
+                    /**
+                     * Minimum date
+                     */
+                    minDate:
+                    {
+                        type     : String,
+                        observer : "_onMinDateChanged"
+                    },
+
+                    /**
+                     * Maximum date
+                     */
+                    maxDate:
+                    {
+                        type     : String,
+                        observer : "_onMaxDateChanged"
+                    },
+
+                    /**
+                     * Minimum date as date object
+                     *
+                     * @private
+                     */
+                    _minDate:
+                    {
+                        type: Date,
+                    },
+
+                    /**
+                     * Minimum date as date object
+                     *
+                     * @private
+                     */
+                    _maxDate:
+                    {
+                        type : Date,
+                    },
+
                 };
+            }
+
+            /**
+             * Validate for form support
+             */
+            validate()
+            {
+                let me   = this;
+                let date = moment( value, me.format, me.locale, true );
+
+                return date.isValid()
+            }
+
+            _onMinDateChanged( newValue, oldValue )
+            {
+                if( newValue !== oldValue )
+                {
+                    let me   = this;
+                    let date = moment( newValue, me.format, me.locale, true ).toDate();
+                    this.set("_minDate", date );
+                }
+            }
+
+            _onMaxDateChanged( newValue, oldValue )
+            {
+                if( newValue !== oldValue )
+                {
+                    let me   = this;
+                    let date = moment( newValue, me.format, me.locale, true ).toDate();
+                    this.set("_maxDate", date );
+                }
             }
 
             /**
@@ -142,14 +225,17 @@
              *
              * @private
              */
-            _onValueChanged(newValue, oldValue)
+            _onValueChanged( newValue, oldValue )
             {
-                let me = this;
-                // If value different then set
-                me._debouncer = Polymer.Debouncer.debounce( me._debouncer,
-                                                            Polymer.Async.timeOut.after(200),
-                                                            () => { me._convertToDate( newValue );
-                });
+                if( newValue !== oldValue )
+                {
+                    let me = this;
+                    // If value different then set
+                    me._debouncer = Polymer.Debouncer.debounce( me._debouncer,
+                                                                Polymer.Async.timeOut.after(200),
+                                                                () => { me._convertToDate( newValue );
+                    });
+                }
             }
 
             /**
@@ -159,12 +245,12 @@
              *
              * @private
              */
-            _convertToOutputFormat(value)
+            _convertToOutputFormat( value )
             {
                 let me    = this;
                 let date  = new Date( value );
 
-                return moment( date ).locale( me.local ).format( this.format );
+                return moment( date ).locale( me.locale ).format( this.format );
             }
 
             /**
@@ -174,10 +260,10 @@
              *
              * @private
              */
-            _convertToDate(value)
+            _convertToDate( value )
             {
                 let me   = this;
-                let date = moment( value, me.format, me.local, true );
+                let date = moment( value, me.format, me.locale, true );
 
                 if( date.isValid() )
                 {
@@ -227,9 +313,9 @@
             {
                 let userAgent        = window.navigator.userAgent;
                 let platform         = window.navigator.platform;
-                let macosPlatforms   = [ 'Macintosh', 'MacIntel', 'MacPPC', 'Mac68K' ];
-                let windowsPlatforms = [ 'Win32', 'Win64', 'Windows', 'WinCE' ];
-                let iosPlatforms     = [ 'iPhone', 'iPad', 'iPod' ];
+                let macosPlatforms   = [ 'Macintosh', 'MacIntel', 'MacPPC' , 'Mac68K' ];
+                let windowsPlatforms = [ 'Win32'    , 'Win64'   , 'Windows', 'WinCE'  ];
+                let iosPlatforms     = [ 'iPhone'   , 'iPad'    , 'iPod'              ];
                 let os               = null;
 
                 if ( macosPlatforms.indexOf(platform) !== -1 )
