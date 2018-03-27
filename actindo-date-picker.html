@@ -13,6 +13,7 @@
 - format can be set based on style and location
 - date is automatically validated during input
 - date and year can be selected
+- minimum and maximum date can be set
 
 -->
 
@@ -73,6 +74,7 @@
             static get properties()
             {
                 return {
+
                     /**
                      * Use moment.js date format convention
                      */
@@ -89,12 +91,6 @@
                     {
                         type  : String,
                         value : "de",
-                    },
-
-                    _inputType:
-                    {
-                        type  : String,
-                        value : ""
                     },
 
                     /**
@@ -197,6 +193,14 @@
                 return date.isValid()
             }
 
+            /**
+             * Converts given min date to date object used by date picker
+             *
+             * @param {String} newValue
+             * @param {String} oldValue
+             *
+             * @private
+             */
             _onMinDateChanged( newValue, oldValue )
             {
                 if( newValue !== oldValue )
@@ -207,6 +211,14 @@
                 }
             }
 
+            /**
+             * Converts given max date to date object used by date picker
+             *
+             * @param {String} newValue
+             * @param {String} oldValue
+             *
+             * @private
+             */
             _onMaxDateChanged( newValue, oldValue )
             {
                 if( newValue !== oldValue )
