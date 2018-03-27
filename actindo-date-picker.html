@@ -46,7 +46,7 @@
         </style>
 
         <div class = "container">
-            <paper-input label = "[[label]]" value = "{{value}}" type = "[[_dateInputType]]">
+            <paper-input label = "[[label]]" value = "{{value}}" type = "[[_dateInputType]]" invalid = "[[invalid]]" error-message = "[[errorMessage]]">
                 <paper-icon-button icon = "date-range" slot = "prefix" on-click = "_openCloseCalender"></paper-icon-button>
                 <div slot = "prefix"></div>
             </paper-input>
@@ -179,6 +179,17 @@
                         type : Date,
                     },
 
+                    invalid:
+                    {
+                        type   : Boolean,
+                        value  : false,
+                        notify : true
+                    },
+
+                    errorMessage:
+                    {
+                        type : String,
+                    }
                 };
             }
 
@@ -188,9 +199,28 @@
             validate()
             {
                 let me   = this;
-                let date = moment( value, me.format, me.locale, true );
+                let date = moment( me.value, me.format, me.locale, true );
 
-                return date.isValid()
+                let invalid = !date.isValid();
+                if( !invalid )
+                {
+                    if( (this._minDate && date.toDate() < this._minDate) || ( this._maxDate && date.toDate() > this._maxDate ) )
+                    {
+                        this.set( "errorMessage", "Date out of range" );
+                        invalid = true;
+                    }
+                    else
+                    {
+                        invalid = false;
+                    }
+                }
+                else
+                {
+                    this.set( "errorMessage", "Date invalid" );
+                }
+                this.set( "invalid", invalid );
+
+                return this.invalid;
             }
 
             /**
@@ -279,8 +309,10 @@
 
                 if( date.isValid() )
                 {
-                    me.set( "_date", new Date( date.format()) )
+                     me.set( "_date", new Date( date.format()) )
                 }
+
+                this.validate();
             }
 
             /**
