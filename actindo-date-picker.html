@@ -1,9 +1,9 @@
-<link rel = "import" href = "../paper-input/paper-input.html">
-<link rel = "import" href = "../paper-dialog/paper-dialog.html">
-<link rel = "import" href = "../paper-button/paper-button.html">
-<link rel = "import" href = "../paper-date-picker/paper-date-picker.html">
-<link rel = "import" href = "../iron-icon/iron-icon.html">
-<link rel = "import" href = "../polymer/lib/utils/debounce.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-date-picker/paper-date-picker.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../polymer/lib/utils/debounce.html">
 
 <!--
 `<actindo-date-picker>` implements a material design based date picker.
@@ -17,43 +17,99 @@
 
 -->
 
-<dom-module id = "actindo-date-picker">
+<dom-module id="actindo-date-picker">
 
     <template>
 
         <style>
 
-            .container
-            {
-                position         : relative;
-                background-color : white;
+            .container {
+                position: relative;
+                background-color: white;
             }
 
-            #dialog
-            {
-                z-index          : 1;
-                position         : absolute;
-                background-color : white;
+            #dialog {
+                z-index: 1;
+                position: absolute;
+                background-color: white;
             }
 
-            paper-date-picker
-            {
-                --light-primary-color   : white;
-                --text-primary-color    : var(--actindo-secondary);
-                --default-primary-color : var(--actindo-primary);
+            paper-date-picker {
+                --light-primary-color: rgba(255, 255, 255, 0.5);
+                --text-primary-color: rgba(255, 255, 255, 1);
+                --default-primary-color: var(--actindo-primary);
+                --paper-font-body1_-_font-weight: 500;
+                --primary-text-color: rgba(33, 33, 33, 0.7);
+                --secondary-text-color: rgba(33, 33, 33, 0.5);
             }
+
+            .month-nav
+            {
+                font-weight: 700;
+            }
+
+            paper-icon-button {
+                position: absolute;
+                top: -11px;
+                right: 0px;
+            }
+
+            .spacer {
+                width: 32px;
+                height: 10px;
+            }
+
+            ::-webkit-scrollbar {
+                width: 10px;
+                height: 10px;
+                padding-right: 5px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            ::-webkit-scrollbar-track:hover {
+                background: rgba(0, 0, 0, 0.15);
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background-color: var(--actindo-secondary-light);
+                border-right: 2px solid var(--actindo-secondary-light);
+                border-left: 2px solid var(--actindo-secondary-light);
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background-color: var(--actindo-secondary);
+                border-right: 2px solid var(--actindo-secondary);
+                border-left: 2px solid var(--actindo-secondary);
+            }
+
+            /*paper-input*/
+            /*{*/
+            /*--paper-input-container-input : {*/
+            /*position:relative;*/
+            /*top: -3px;*/
+            /*}*/
+            /*}*/
+            /*.prefix*/
+            /*{*/
+            /*height:25px;*/
+            /*}*/
 
         </style>
 
-        <div class = "container">
-            <paper-input label = "[[label]]" value = "{{value}}" type = "[[_dateInputType]]" invalid = "[[invalid]]" error-message = "[[_errorMessage]]" required = "[[required]]" disabled = "[[disabled]]">
-                <paper-icon-button icon = "date-range" slot = "prefix" on-click = "_openCloseCalender"></paper-icon-button>
-                <div slot = "prefix"></div>
+        <div class="container">
+            <paper-input label="[[label]]" value="{{value}}" type="[[_dateInputType]]" invalid="[[invalid]]"
+                         error-message="[[_errorMessage]]" required="[[required]]" disabled="[[disabled]]">
+                <paper-icon-button icon="date-range" slot="suffix" on-click="_openCloseCalender"></paper-icon-button>
             </paper-input>
 
-            <template is = "dom-if" if = "[[_pickerVisible]]">
-                <paper-card id = "dialog" class = "paper-date-picker-dialog" on-iron-overlay-closed = "dismissDialog" elevation = "5">
-                    <paper-date-picker id = "datePicker" date = "{{_date}}" min-date = "[[_minDate]]" max-date = "[[_maxDate]]"></paper-date-picker>
+            <template is="dom-if" if="[[_pickerVisible]]">
+                <paper-card id="dialog" class="paper-date-picker-dialog" on-iron-overlay-closed="dismissDialog"
+                            elevation="5">
+                    <paper-date-picker locale="[[locale]]" id="datePicker" date="{{_date}}" min-date="[[_minDate]]"
+                                       max-date="[[_maxDate]]"></paper-date-picker>
                 </paper-card>
             </template>
 
@@ -63,35 +119,32 @@
 
     <script>
 
-        class ActindoDatePicker extends Polymer.Element
-        {
+        class ActindoDatePicker extends Polymer.Element {
 
-            static get is()
-            {
+            static get is() {
                 return "actindo-date-picker";
             }
 
-            static get properties()
-            {
+            static get properties() {
                 return {
 
                     /**
                      * Use moment.js date format convention
                      */
                     format:
-                    {
-                        type  : String,
-                        value : "l",
-                    },
+                        {
+                            type: String,
+                            value: "l",
+                        },
 
                     /**
                      * Moment.js locale definition
                      */
                     locale:
-                    {
-                        type  : String,
-                        value : "de",
-                    },
+                        {
+                            type: String,
+                            value: "de",
+                        },
 
                     /**
                      * Resulting date
@@ -99,20 +152,20 @@
                      * @private
                      */
                     _date:
-                    {
-                        type     : String,
-                        observer : "_onDateChanged"
-                    },
+                        {
+                            type: String,
+                            observer: "_onDateChanged"
+                        },
 
                     /**
                      * Value for paper input
                      */
                     value:
-                    {
-                        type     : String,
-                        notify   : true,
-                        observer : "_onValueChanged"
-                    },
+                        {
+                            type: String,
+                            notify: true,
+                            observer: "_onValueChanged"
+                        },
 
                     /**
                      * Is date picker visible
@@ -120,44 +173,44 @@
                      * @private
                      */
                     _pickerVisible:
-                    {
-                        type  : Boolean,
-                        value : false
-                    },
+                        {
+                            type: Boolean,
+                            value: false
+                        },
 
                     /**
                      * Name for the date field
                      */
                     name:
-                    {
-                        type : String,
-                    },
+                        {
+                            type: String,
+                        },
 
                     /**
                      * Label for the paper input
                      */
                     label:
-                    {
-                        type : String
-                    },
+                        {
+                            type: String
+                        },
 
                     /**
                      * Minimum date
                      */
                     minDate:
-                    {
-                        type     : String,
-                        observer : "_onMinDateChanged"
-                    },
+                        {
+                            type: String,
+                            observer: "_onMinDateChanged"
+                        },
 
                     /**
                      * Maximum date
                      */
                     maxDate:
-                    {
-                        type     : String,
-                        observer : "_onMaxDateChanged"
-                    },
+                        {
+                            type: String,
+                            observer: "_onMaxDateChanged"
+                        },
 
                     /**
                      * Minimum date as date object
@@ -165,9 +218,10 @@
                      * @private
                      */
                     _minDate:
-                    {
-                        type: Date,
-                    },
+                        {
+                            type: Date,
+                            value: new Date(),
+                        },
 
                     /**
                      * Minimum date as date object
@@ -175,19 +229,20 @@
                      * @private
                      */
                     _maxDate:
-                    {
-                        type : Date,
-                    },
+                        {
+                            type: Date,
+                            value: new Date(),
+                        },
 
                     /**
                      *  Validation result
                      */
                     invalid:
-                    {
-                        type   : Boolean,
-                        value  : false,
-                        notify : true
-                    },
+                        {
+                            type: Boolean,
+                            value: false,
+                            notify: true
+                        },
 
                     /**
                      * Error message in case of invalid input
@@ -195,27 +250,27 @@
                      * @private
                      */
                     _errorMessage:
-                    {
-                        type : String,
-                    },
+                        {
+                            type: String,
+                        },
 
                     /**
                      * Required property - passed on to underlying paper input
                      */
                     required:
-                    {
-                        type  : Boolean,
-                        value : false
-                    },
+                        {
+                            type: Boolean,
+                            value: false
+                        },
 
                     /**
                      * Disabled property - passed on to underlying paper input
                      */
                     disabled:
-                    {
-                        type  : Boolean,
-                        value : false
-                    }
+                        {
+                            type: Boolean,
+                            value: false
+                        }
 
                 };
             }
@@ -223,29 +278,24 @@
             /**
              * Validate for form support
              */
-            validate()
-            {
-                let me   = this;
-                let date = moment( me.value, me.format, me.locale, true );
+            validate() {
+                let me = this;
+                let date = moment(me.value, me.format, me.locale, true);
 
                 let invalid = !date.isValid();
-                if( !invalid )
-                {
-                    if( (this._minDate && date.toDate() < this._minDate) || ( this._maxDate && date.toDate() > this._maxDate ) )
-                    {
-                        this.set( "_errorMessage", "Date out of range" );
+                if (!invalid) {
+                    if ((this._minDate && date.toDate() < this._minDate) || (this._maxDate && date.toDate() > this._maxDate)) {
+                        this.set("_errorMessage", "Date out of range");
                         invalid = true;
                     }
-                    else
-                    {
+                    else {
                         invalid = false;
                     }
                 }
-                else
-                {
-                    this.set( "_errorMessage", "Date invalid" );
+                else {
+                    this.set("_errorMessage", "Date invalid");
                 }
-                this.set( "invalid", invalid );
+                this.set("invalid", invalid);
 
                 return this.invalid;
             }
@@ -258,13 +308,11 @@
              *
              * @private
              */
-            _onMinDateChanged( newValue, oldValue )
-            {
-                if( newValue !== oldValue )
-                {
-                    let me   = this;
-                    let date = moment( newValue, me.format, me.locale, true ).toDate();
-                    this.set("_minDate", date );
+            _onMinDateChanged(newValue, oldValue) {
+                if (newValue !== oldValue) {
+                    let me = this;
+                    let date = moment(newValue, me.format, me.locale, true).toDate();
+                    this.set("_minDate", date);
                 }
             }
 
@@ -276,13 +324,11 @@
              *
              * @private
              */
-            _onMaxDateChanged( newValue, oldValue )
-            {
-                if( newValue !== oldValue )
-                {
-                    let me   = this;
-                    let date = moment( newValue, me.format, me.locale, true ).toDate();
-                    this.set("_maxDate", date );
+            _onMaxDateChanged(newValue, oldValue) {
+                if (newValue !== oldValue) {
+                    let me = this;
+                    let date = moment(newValue, me.format, me.locale, true).toDate();
+                    this.set("_maxDate", date);
                 }
             }
 
@@ -294,16 +340,17 @@
              *
              * @private
              */
-            _onValueChanged( newValue, oldValue )
-            {
-                if( newValue !== oldValue )
-                {
+            _onValueChanged(newValue, oldValue) {
+                console.log(newValue);
+                console.log(oldValue);
+                if (newValue !== oldValue) {
                     let me = this;
                     // If value different then set
-                    me._debouncer = Polymer.Debouncer.debounce( me._debouncer,
-                                                                Polymer.Async.timeOut.after(200),
-                                                                () => { me._convertToDate( newValue );
-                    });
+                    me._debouncer = Polymer.Debouncer.debounce(me._debouncer,
+                        Polymer.Async.timeOut.after(200),
+                        () => {
+                            me._convertToDate(newValue);
+                        });
                 }
             }
 
@@ -314,12 +361,11 @@
              *
              * @private
              */
-            _convertToOutputFormat( value )
-            {
-                let me    = this;
-                let date  = new Date( value );
+            _convertToOutputFormat(value) {
+                let me = this;
+                let date = new Date(value);
 
-                return moment( date ).locale( me.locale ).format( this.format );
+                return moment(date).locale(me.locale).format(this.format);
             }
 
             /**
@@ -329,14 +375,12 @@
              *
              * @private
              */
-            _convertToDate( value )
-            {
-                let me   = this;
-                let date = moment( value, me.format, me.locale, true );
+            _convertToDate(value) {
+                let me = this;
+                let date = moment(value, me.format, me.locale, true);
 
-                if( date.isValid() )
-                {
-                     me.set( "_date", new Date( date.format()) )
+                if (date.isValid()) {
+                    me.set("_date", new Date(date.format()))
                 }
 
                 this.validate();
@@ -350,26 +394,22 @@
              *
              * @private
              */
-            _onDateChanged( newValue, oldValue )
-            {
-                let me        = this;
-                let formatted = this._convertToOutputFormat( newValue );
-                me.set( "value", formatted );
+            _onDateChanged(newValue, oldValue) {
+                let me = this;
+                let formatted = this._convertToOutputFormat(newValue);
+                me.set("value", formatted);
             }
 
             /**
              * Handle UI - set correct input type for mobile devices
              */
-            prepareUi()
-            {
+            prepareUi() {
                 let os = this._getOS();
-                if( os === "iOS" || os === "Android" )
-                {
-                    this.set( "_dateInputType", "date" );
+                if (os === "iOS" || os === "Android") {
+                    this.set("_dateInputType", "date");
                 }
-                else
-                {
-                    this.set( "_dateInputType", "" );
+                else {
+                    this.set("_dateInputType", "");
                 }
             }
 
@@ -380,33 +420,27 @@
              *
              * @private
              */
-            _getOS()
-            {
-                let userAgent        = window.navigator.userAgent;
-                let platform         = window.navigator.platform;
-                let macosPlatforms   = [ 'Macintosh', 'MacIntel', 'MacPPC' , 'Mac68K' ];
-                let windowsPlatforms = [ 'Win32'    , 'Win64'   , 'Windows', 'WinCE'  ];
-                let iosPlatforms     = [ 'iPhone'   , 'iPad'    , 'iPod'              ];
-                let os               = null;
+            _getOS() {
+                let userAgent = window.navigator.userAgent;
+                let platform = window.navigator.platform;
+                let macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
+                let windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+                let iosPlatforms = ['iPhone', 'iPad', 'iPod'];
+                let os = null;
 
-                if ( macosPlatforms.indexOf(platform) !== -1 )
-                {
+                if (macosPlatforms.indexOf(platform) !== -1) {
                     os = 'Mac OS';
                 }
-                else if ( iosPlatforms.indexOf(platform) !== -1 )
-                {
+                else if (iosPlatforms.indexOf(platform) !== -1) {
                     os = 'iOS';
                 }
-                else if ( windowsPlatforms.indexOf(platform) !== -1 )
-                {
+                else if (windowsPlatforms.indexOf(platform) !== -1) {
                     os = 'Windows';
                 }
-                else if ( /Android/.test( userAgent ) )
-                {
+                else if (/Android/.test(userAgent)) {
                     os = 'Android';
                 }
-                else if ( !os && /Linux/.test(platform) )
-                {
+                else if (!os && /Linux/.test(platform)) {
                     os = 'Linux';
                 }
 
@@ -416,13 +450,12 @@
             /**
              * Binds the click events during initial callback
              */
-            connectedCallback()
-            {
+            connectedCallback() {
                 super.connectedCallback();
                 let me = this;
 
-                this._downHandler = this._onDown.bind( this );
-                this._upHandler   = this._onUp.bind( this );
+                this._downHandler = this._onDown.bind(this);
+                this._upHandler = this._onUp.bind(this);
 
                 this.prepareUi();
             }
@@ -434,21 +467,17 @@
              *
              * @private
              */
-            _onUp( event )
-            {
+            _onUp(event) {
                 let found = false;
 
-                for( let i = 0; i < event.path.length; i++ )
-                {
+                for (let i = 0; i < event.path.length; i++) {
                     let row = event.path[i];
-                    if( row.nodeName === "ACTINDO-DATE-PICKER"  )
-                    {
+                    if (row.nodeName === "ACTINDO-DATE-PICKER") {
                         found = true;
                         break;
                     }
                 }
-                if( this._changeOpenState && !found )
-                {
+                if (this._changeOpenState && !found) {
                     this._openCloseCalender();
                 }
             }
@@ -460,14 +489,11 @@
              *
              * @private
              */
-            _onDown(event)
-            {
+            _onDown(event) {
                 let found = false;
-                for( let i = 0; i < event.path.length; i++ )
-                {
+                for (let i = 0; i < event.path.length; i++) {
                     let row = event.path[i];
-                    if( row.nodeName === "ACTINDO-DATE-PICKER"  )
-                    {
+                    if (row.nodeName === "ACTINDO-DATE-PICKER") {
                         found = true;
                         break;
                     }
@@ -480,24 +506,27 @@
              *
              * @private
              */
-            _openCloseCalender()
-            {
+            _openCloseCalender() {
                 this.set("_pickerVisible", !this._pickerVisible);
                 let me = this;
-                if( this._pickerVisible )
-                {
-                    document.addEventListener( "mousedown" , this._downHandler );
-                    document.addEventListener( "mouseup"   , this._upHandler   );
+                if (this._pickerVisible) {
+                    document.addEventListener("mousedown", this._downHandler);
+                    document.addEventListener("mouseup", this._upHandler);
                 }
-                else
-                {
-                    document.removeEventListener( "mousedown" , this._downHandler );
-                    document.removeEventListener( "mouseup"   , this._upHandler   );
+                else {
+                    document.removeEventListener("mousedown", this._downHandler);
+                    document.removeEventListener("mouseup", this._upHandler);
                 }
+                // if(this._pickerVisible) {
+                //     window.setTimeout( () => {
+                //         Polymer.dom(this.root).querySelector('#datePicker').$.yearList.centerSelected();
+                //     },0);
+                //
+                // }
             }
         }
 
-        customElements.define( ActindoDatePicker.is, ActindoDatePicker );
+        customElements.define(ActindoDatePicker.is, ActindoDatePicker);
 
     </script>
 
