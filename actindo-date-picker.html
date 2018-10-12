@@ -43,20 +43,10 @@
                 --secondary-text-color: rgba(33, 33, 33, 0.5);
             }
 
-            .month-nav
-            {
-                font-weight: 700;
-            }
-
             paper-icon-button {
                 position: absolute;
                 top: -11px;
                 right: 0px;
-            }
-
-            .spacer {
-                width: 32px;
-                height: 10px;
             }
 
             ::-webkit-scrollbar {
@@ -84,18 +74,6 @@
                 border-right: 2px solid var(--actindo-secondary);
                 border-left: 2px solid var(--actindo-secondary);
             }
-
-            /*paper-input*/
-            /*{*/
-            /*--paper-input-container-input : {*/
-            /*position:relative;*/
-            /*top: -3px;*/
-            /*}*/
-            /*}*/
-            /*.prefix*/
-            /*{*/
-            /*height:25px;*/
-            /*}*/
 
         </style>
 
@@ -341,8 +319,6 @@
              * @private
              */
             _onValueChanged(newValue, oldValue) {
-                console.log(newValue);
-                console.log(oldValue);
                 if (newValue !== oldValue) {
                     let me = this;
                     // If value different then set
@@ -517,12 +493,6 @@
                     document.removeEventListener("mousedown", this._downHandler);
                     document.removeEventListener("mouseup", this._upHandler);
                 }
-                // if(this._pickerVisible) {
-                //     window.setTimeout( () => {
-                //         Polymer.dom(this.root).querySelector('#datePicker').$.yearList.centerSelected();
-                //     },0);
-                //
-                // }
             }
         }
 
