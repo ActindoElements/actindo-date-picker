@@ -270,8 +270,11 @@
             validate() {
                 let me = this;
                 if (me.allowEmpty &&
-                    (!me.value ||
-                        (me.value.valueOf() === 'string') && me.value.length === 0)) {
+                    (
+                        !me.value ||
+                        (me.value.typeOf() === 'string' && me.value.length === 0)
+                    )
+                ) {
                     return true;
                 }
                 let date = moment(me.value, me.format, me.locale, true);
@@ -295,7 +298,7 @@
             }
 
             _isValidDate(date) {
-                return date && date.getTime() && !isNaN(date.getTime());
+                return date && (date.getTime()|| date.getTime() === 0) && !isNaN(date.getTime());
             }
 
 
