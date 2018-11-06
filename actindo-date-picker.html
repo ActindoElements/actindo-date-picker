@@ -272,7 +272,7 @@
                 if (me.allowEmpty &&
                     (
                         !me.value ||
-                        (me.value.typeOf() === 'string' && me.value.length === 0)
+                        (typeof value === 'string' && me.value.length === 0)
                     )
                 ) {
                     return true;
