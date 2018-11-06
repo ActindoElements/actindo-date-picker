@@ -25,7 +25,7 @@
 
             .container {
                 position: relative;
-                background-color: white;
+                background-color: transparent;
             }
 
             #dialog {
@@ -80,11 +80,13 @@
         <div class="container">
             <paper-input label="[[label]]" value="{{value}}" type="[[_dateInputType]]" invalid="[[invalid]]"
                          error-message="[[_errorMessage]]" required="[[required]]" disabled="[[disabled]]">
-                <paper-icon-button icon="date-range" slot="suffix" on-click="_openCloseCalender"></paper-icon-button>
+                <paper-icon-button tabindex="-1" icon="date-range" slot="suffix"
+                                   on-click="_openCloseCalender"></paper-icon-button>
             </paper-input>
 
             <template is="dom-if" if="[[_pickerVisible]]">
-                <paper-card id="dialog" class="paper-date-picker-dialog" on-iron-overlay-closed="dismissDialog"
+                <paper-card tabindex="-1" id="dialog" class="paper-date-picker-dialog"
+                            on-iron-overlay-closed="dismissDialog"
                             elevation="5">
                     <paper-date-picker locale="[[locale]]" id="datePicker" date="{{_date}}" min-date="[[_minDate]]"
                                        max-date="[[_maxDate]]"></paper-date-picker>
@@ -122,6 +124,15 @@
                         {
                             type: String,
                             value: "de",
+                        },
+
+                    /**
+                     * Is empty a valid value
+                     */
+                    allowEmpty:
+                        {
+                            type: Boolean,
+                            value: false
                         },
 
                     /**
@@ -198,7 +209,7 @@
                     _minDate:
                         {
                             type: Date,
-                            value: new Date(),
+                            value: null,
                         },
 
                     /**
@@ -209,7 +220,7 @@
                     _maxDate:
                         {
                             type: Date,
-                            value: new Date(),
+                            value: null,
                         },
 
                     /**
@@ -258,11 +269,19 @@
              */
             validate() {
                 let me = this;
+                if (me.allowEmpty &&
+                    (
+                        !me.value ||
+                        (typeof value === 'string' && me.value.length === 0)
+                    )
+                ) {
+                    return true;
+                }
                 let date = moment(me.value, me.format, me.locale, true);
 
                 let invalid = !date.isValid();
                 if (!invalid) {
-                    if ((this._minDate && date.toDate() < this._minDate) || (this._maxDate && date.toDate() > this._maxDate)) {
+                    if ((this._isValidDate(this._minDate) && date.toDate() < this._minDate) || (this._isValidDate(this._maxDate) && date.toDate() > this._maxDate)) {
                         this.set("_errorMessage", "Date out of range");
                         invalid = true;
                     }
@@ -277,6 +296,11 @@
 
                 return !this.invalid;
             }
+
+            _isValidDate(date) {
+                return date && (date.getTime()|| date.getTime() === 0) && !isNaN(date.getTime());
+            }
+
 
             /**
              * Converts given min date to date object used by date picker
@@ -326,6 +350,15 @@
                         Polymer.Async.timeOut.after(200),
                         () => {
                             me._convertToDate(newValue);
+                            const element = Polymer.dom(this.root).querySelector('#datePicker');
+                            //Handling recentering of date in the calendar/year-list
+                            // when user changes the date by typing
+                            if (element && me._pickerVisible) {
+                                window.setTimeout(() => {
+                                    element.centerDate();
+                                }, 0);
+
+                            }
                         });
                 }
             }
@@ -448,7 +481,7 @@
 
                 for (let i = 0; i < event.path.length; i++) {
                     let row = event.path[i];
-                    if (row.nodeName === "ACTINDO-DATE-PICKER") {
+                    if (row.nodeName === "ACTINDO-DATE-PICKER" && row === this) {
                         found = true;
                         break;
                     }
@@ -469,7 +502,7 @@
                 let found = false;
                 for (let i = 0; i < event.path.length; i++) {
                     let row = event.path[i];
-                    if (row.nodeName === "ACTINDO-DATE-PICKER") {
+                    if (row.nodeName === "ACTINDO-DATE-PICKER" && row === this) {
                         found = true;
                         break;
                     }
@@ -488,10 +521,20 @@
                 if (this._pickerVisible) {
                     document.addEventListener("mousedown", this._downHandler);
                     document.addEventListener("mouseup", this._upHandler);
+                    //We need to re-center the date/year if the user has changed the date
+                    //by hand while the picker was closed
+                    const element = Polymer.dom(this.root).querySelector('#datePicker');
+                    if (element) {
+                        window.setTimeout(() => {
+                            element.centerDate();
+                        }, 0);
+
+                    }
                 }
                 else {
                     document.removeEventListener("mousedown", this._downHandler);
                     document.removeEventListener("mouseup", this._upHandler);
+
                 }
             }
         }
