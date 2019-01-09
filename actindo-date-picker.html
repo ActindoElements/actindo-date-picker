@@ -272,28 +272,30 @@
                 if (me.allowEmpty &&
                     (
                         !me.value ||
-                        (typeof value === 'string' && me.value.length === 0)
+                        (typeof me.value === 'string' && me.value.length === 0)
                     )
                 ) {
-                    return true;
-                }
-                let date = moment(me.value, me.format, me.locale, true);
-
-                let invalid = !date.isValid();
-                if (!invalid) {
-                    if ((this._isValidDate(this._minDate) && date.toDate() < this._minDate) || (this._isValidDate(this._maxDate) && date.toDate() > this._maxDate)) {
-                        this.set("_errorMessage", "Date out of range");
-                        invalid = true;
-                    }
-                    else {
-                        invalid = false;
-                    }
+                    this.set("invalid", false);
                 }
                 else {
-                    this.set("_errorMessage", "Date invalid");
-                }
-                this.set("invalid", invalid);
+                    let date = moment(me.value, me.format, me.locale, true);
 
+                    let invalid = !date.isValid();
+                    if (!invalid) {
+                        if ((this._isValidDate(this._minDate) && date.toDate() < this._minDate) || (this._isValidDate(this._maxDate) && date.toDate() > this._maxDate)) {
+                            this.set("_errorMessage", "Date out of range");
+                            invalid = true;
+                        }
+                        else {
+                            invalid = false;
+                        }
+                    }
+                    else {
+                        this.set("_errorMessage", "Date invalid");
+                    }
+                    this.set("invalid", invalid);
+
+                }
                 return !this.invalid;
             }
 
