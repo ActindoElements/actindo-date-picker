@@ -260,7 +260,6 @@
                             type: Boolean,
                             value: false
                         }
-
                 };
             }
 
@@ -488,8 +487,13 @@
                         break;
                     }
                 }
-                if (this._changeOpenState && !found) {
-                    this._openCloseCalender();
+
+                // When event was fired on an actindo-datepicker and it should be closed,
+                // then close it deffered
+                if (this._changeOpenState && found) {
+                    window.setTimeout(() => {
+                       this._openCloseCalender();
+                    }, 0);
                 }
             }
 
@@ -509,7 +513,9 @@
                         break;
                     }
                 }
-                this._changeOpenState = !found;
+
+                // When event was fired on an actindo-datepicker, then mark for closing
+                this._changeOpenState = found;
             }
 
             /**
