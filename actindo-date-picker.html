@@ -345,6 +345,7 @@
              */
             _onValueChanged(newValue, oldValue) {
                 if (newValue !== oldValue) {
+
                     let me = this;
                     // If value different then set
                     me._debouncer = Polymer.Debouncer.debounce(me._debouncer,
@@ -358,7 +359,6 @@
                                 window.setTimeout(() => {
                                     element.centerDate();
                                 }, 0);
-
                             }
                         });
                 }
@@ -405,9 +405,9 @@
              * @private
              */
             _onDateChanged(newValue, oldValue) {
-                let me = this;
+
                 let formatted = this._convertToOutputFormat(newValue);
-                me.set("value", formatted);
+                this.set("value", formatted);
             }
 
             /**
@@ -478,8 +478,40 @@
              * @private
              */
             _onUp(event) {
-                let found = false;
 
+                let me = this;
+
+                /*
+                 * Composed condition for closing calendar after selecting date by click
+                 */
+
+                // Click event was fired on a day badge inside a calendar
+                let target = event.path[0];
+                let dateChangeByClickSelect = target.classList.contains('day-item');
+
+                // AND there was a mouse downclick somewhere on calendar
+                dateChangeByClickSelect &= this._clickOnCalendar;
+
+                // AND day badge indeed contains a day number as text
+                if (dateChangeByClickSelect)
+                {
+                    dateChangeByClickSelect &= target.firstElementChild.textContent != '';
+                }
+
+                // Close calendar deffered to allow user to see his selection
+                if (dateChangeByClickSelect)
+                {
+                    window.setTimeout(() => {
+                        me._closeCalendar();
+                    }, 120);
+
+                    // Early return
+                    return;
+                }
+
+
+                // Check whether there was a click somewhere else besides date picker
+                let found = false;
                 for (let i = 0; i < event.path.length; i++) {
                     let row = event.path[i];
                     if (row.nodeName === "ACTINDO-DATE-PICKER" && row === this) {
@@ -488,12 +520,10 @@
                     }
                 }
 
-                // When event was fired on an actindo-datepicker and it should be closed,
-                // then close it deffered
-                if (this._changeOpenState && found) {
-                    window.setTimeout(() => {
-                       this._openCloseCalender();
-                    }, 0);
+                // When event was not fired on an actindo-datepicker,
+                // the handle it like escape and close calendar
+                if (!this._clickOnCalendar && !found) {
+                    this._closeCalendar();
                 }
             }
 
@@ -505,6 +535,8 @@
              * @private
              */
             _onDown(event) {
+
+                // Check whether there was a click on date-picker
                 let found = false;
                 for (let i = 0; i < event.path.length; i++) {
                     let row = event.path[i];
@@ -514,8 +546,11 @@
                     }
                 }
 
-                // When event was fired on an actindo-datepicker, then mark for closing
-                this._changeOpenState = found;
+                // When event was not fired on an actindo-datepicker,
+                // which means it was clicked somewhere besides,
+                // then mark for closing
+                this._clickOnCalendar = found;
+                this._changeOpenState = !found;
             }
 
             /**
@@ -524,26 +559,66 @@
              * @private
              */
             _openCloseCalender() {
-                this.set("_pickerVisible", !this._pickerVisible);
-                let me = this;
-                if (this._pickerVisible) {
-                    document.addEventListener("mousedown", this._downHandler);
-                    document.addEventListener("mouseup", this._upHandler);
-                    //We need to re-center the date/year if the user has changed the date
-                    //by hand while the picker was closed
-                    const element = Polymer.dom(this.root).querySelector('#datePicker');
-                    if (element) {
-                        window.setTimeout(() => {
-                            element.centerDate();
-                        }, 0);
-
-                    }
+                if (!this._pickerVisible) {
+                    this._openCalendar();
                 }
                 else {
-                    document.removeEventListener("mousedown", this._downHandler);
-                    document.removeEventListener("mouseup", this._upHandler);
-
+                    this._closeCalendar();
                 }
+            }
+
+            /**
+             * Open date picker calendar
+             *
+             * @private
+             */
+            _openCalendar() {
+
+                // Do nothing if already open
+                if (this._pickerVisible)
+                {
+                    return;
+                }
+
+                // Set visible
+                this.set("_pickerVisible", true);
+
+                // Add click event handlers
+                document.addEventListener("mousedown", this._downHandler);
+                document.addEventListener("mouseup", this._upHandler);
+
+                // We need to re-center the date/year if the user has changed the date
+                // by hand while the picker was closed
+                const element = Polymer.dom(this.root).querySelector('#datePicker');
+                if (element) {
+                    window.setTimeout(() => {
+                        element.centerDate();
+                    }, 0);
+                }
+            }
+
+            /**
+             * Close date picker calendar
+             *
+             * @private
+             */
+            _closeCalendar() {
+
+                // Do nothing if already closed
+                if (!this._pickerVisible)
+                {
+                    return;
+                }
+
+                // Set visibility to false
+                this.set("_pickerVisible", false);
+
+                // Remove click event handlers
+                document.removeEventListener("mousedown", this._downHandler);
+                document.removeEventListener("mouseup", this._upHandler);
+
+                // Unset mouse down click indicator
+                this._clickOnCalendar = undefined;
             }
         }
 
