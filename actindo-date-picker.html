@@ -88,7 +88,7 @@
                 <paper-card tabindex="-1" id="dialog" class="paper-date-picker-dialog"
                             on-iron-overlay-closed="dismissDialog"
                             elevation="5">
-                    <paper-date-picker locale="[[locale]]" id="datePicker" date="{{_date}}" min-date="[[_minDate]]"
+                    <paper-date-picker locale="[[locale]]" id="datePicker" date="{{dateObject}}" min-date="[[_minDate]]"
                                        max-date="[[_maxDate]]"></paper-date-picker>
                 </paper-card>
             </template>
@@ -123,7 +123,7 @@
                     locale:
                         {
                             type: String,
-                            value: "de",
+                            value: moment.locale(),
                         },
 
                     /**
@@ -140,9 +140,10 @@
                      *
                      * @private
                      */
-                    _date:
+                    dateObject:
                         {
-                            type: String,
+                            type: Object,
+                            notify: true,
                             observer: "_onDateChanged"
                         },
 
@@ -344,16 +345,20 @@
              * @private
              */
             _onValueChanged(newValue, oldValue) {
+
                 if (newValue !== oldValue) {
 
                     let me = this;
+
                     // If value different then set
                     me._debouncer = Polymer.Debouncer.debounce(me._debouncer,
                         Polymer.Async.timeOut.after(200),
                         () => {
+
                             me._convertToDate(newValue);
+
                             const element = Polymer.dom(this.root).querySelector('#datePicker');
-                            //Handling recentering of date in the calendar/year-list
+                            // Handling recentering of date in the calendar/year-list
                             // when user changes the date by typing
                             if (element && me._pickerVisible) {
                                 window.setTimeout(() => {
@@ -390,7 +395,7 @@
                 let date = moment(value, me.format, me.locale, true);
 
                 if (date.isValid()) {
-                    me.set("_date", new Date(date.format()))
+                    me.set("dateObject", new Date(date.format()))
                 }
 
                 this.validate();
