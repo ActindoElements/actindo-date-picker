@@ -498,7 +498,7 @@
                  */
 
                 // Click event was fired on a day badge inside a calendar
-                let target = event.path[0];
+                let target = event.composedPath()[0];
                 let dateChangeByClickSelect = target.classList.contains('day-item');
 
                 // AND there was a mouse downclick somewhere on calendar
@@ -524,8 +524,9 @@
 
                 // Check whether there was a click somewhere else besides date picker
                 let found = false;
-                for (let i = 0; i < event.path.length; i++) {
-                    let row = event.path[i];
+                const path = event.composedPath();
+                for (let i = 0; i < path.length; i++) {
+                    let row = path[i];
                     if (row.nodeName === "ACTINDO-DATE-PICKER" && row === this) {
                         found = true;
                         break;
@@ -550,8 +551,9 @@
 
                 // Check whether there was a click on date-picker
                 let found = false;
-                for (let i = 0; i < event.path.length; i++) {
-                    let row = event.path[i];
+                const path = event.composedPath();
+                for (let i = 0; i < path.length; i++) {
+                    let row = path[i];
                     if (row.nodeName === "ACTINDO-DATE-PICKER" && row === this) {
                         found = true;
                         break;
